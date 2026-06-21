@@ -17,8 +17,7 @@ skimProgPath = drop 1
 
 program : {es : _} -> Has [Console, PrimIO, HasErr (HttpError String), HasErr String] es => App es ()
 program = do
-  args <- primIO getArgs
-  cfg <- primIO $ parse $ skimProgPath args
+  cfg <- primIO $ parse . skimProgPath =<< getArgs
   putStrLn
     """
     verbose = \{show cfg.verbose}
@@ -29,23 +28,23 @@ program = do
   url <- case url_from_string cfg.server of
     Left err => throw "Url error: \{err}"
     Right url => pure url
-  (response, body) <- Control.App.HttpBridge.request {e = String} client GET url [] ()
+  (response, body) <- request {e = String} client GET url [] ()
   putStrLn $ show response
 
 handleFor :
-  (onok : a -> App e b) ->
-  (onerr : err -> App e b) ->
-  App (err :: e) a ->
-  App e b
+     (onOk : a -> App e b)
+  -> (onErr : err -> App e b)
+  -> App (err :: e) a
+  -> App e b
 handleFor onOk onErr prog = handle prog onOk onErr
 
 main : IO ()
 main =
   run
   <| handleFor {err = HttpError String}
-    (\_ => pure ())
+    pure
     (\err => primIO $ putStrLn "Http error: \{show err}")
-    <| handleFor {err = String}
-      (\_ => pure ())
-      (\err => primIO $ putStrLn err)
-      program
+  <| handleFor {err = String}
+    pure
+    (\err => primIO $ putStrLn err)
+  <| program
