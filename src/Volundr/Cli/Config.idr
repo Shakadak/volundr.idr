@@ -19,6 +19,8 @@ defaultConfig = MkConfig
 options : HasIO io => List (OptDescr (Config -> io Config))
 options =
   [ MkOpt ['v'] ["verbose"] (NoArg (pure . { verbose := True })) "Enable verbose output."
+  , MkOpt [] ["server"] (ReqArg (\address => pure . { server := address}) "SERVER") "The server to query."
+  , MkOpt [] ["message"] (ReqArg (\message => pure . { message := message}) "MESSAGE") "The server to query."
   ]
 
 public export

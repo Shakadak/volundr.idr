@@ -14,7 +14,8 @@ authors = "Shakadak"
 
 -- packages to add to search path
 depends =
-  contrib
+    contrib
+  , http
 
 -- modules to install
 -- modules =
