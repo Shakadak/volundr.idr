@@ -32,7 +32,6 @@ help = do
   putStrLn $ usageInfo "Usage: volundr [OPTIONS]" $ options {io = io}
   exitWith ExitSuccess
 
-public export
 merge : HasIO io => List (Config -> io Config) -> io Config
 merge = foldl (>>=) (pure defaultConfig)
 
