@@ -7,6 +7,7 @@ import System
 import System.Console.GetOpt
 
 import Network.HTTP
+import Utils.String
 
 import Control.App.HttpBridge
 import Volundr.Cli.Config
@@ -30,6 +31,9 @@ program = do
     Right url => pure url
   (response, body) <- request {e = String} client GET url [] ()
   putStrLn $ show response
+  Just content <- utf8_pack <$> toList_ body
+    | Nothing => throw "Body error: Couldn't pack the content."
+  putStrLn $ content
 
 handleFor :
      (onOk : a -> App e b)
