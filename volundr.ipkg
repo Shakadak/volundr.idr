@@ -16,6 +16,7 @@ authors = "Shakadak"
 depends =
     contrib
   , http
+  , json-simple
 
 -- modules to install
 -- modules =
@@ -25,7 +26,7 @@ main = Main
 
 -- name of executable
 executable = "volundr"
-opts = "--inc chez"
+-- opts = "--inc chez"
 sourcedir = "src"
 -- builddir =
 -- outputdir =
